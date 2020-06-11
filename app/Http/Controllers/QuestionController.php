@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Qustion;
+use App\Model\Question;
 use Illuminate\Http\Request;
 
-class QustionController extends Controller
+class QuestionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class QustionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Model\Qustion  $qustion
+     * @param  \App\Model\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function show(Qustion $qustion)
+    public function show(Question $question)
     {
         //
     }
@@ -52,10 +52,10 @@ class QustionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Model\Qustion  $qustion
+     * @param  \App\Model\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function edit(Qustion $qustion)
+    public function edit(Question $question)
     {
         //
     }
@@ -64,10 +64,10 @@ class QustionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Model\Qustion  $qustion
+     * @param  \App\Model\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Qustion $qustion)
+    public function update(Request $request, Question $question)
     {
         //
     }
@@ -75,10 +75,10 @@ class QustionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Model\Qustion  $qustion
+     * @param  \App\Model\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Qustion $qustion)
+    public function destroy(Question $question)
     {
         //
     }
