@@ -1,5 +1,5 @@
 <template>
-    <v-card height="150">
+    <v-card height="60">
         <v-footer
             absolute
         >
@@ -7,7 +7,7 @@
                 class="text-center"
                 cols="12"
             >
-                {{ new Date().getFullYear() }} — Laravel
+                {{ new Date().getFullYear() }}  LaraQuestion
             </v-col>
         </v-footer>
     </v-card>
