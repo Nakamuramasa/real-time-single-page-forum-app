@@ -17,9 +17,11 @@
                 color="secondary"
                 class="mr-4"
                 type="submit"
-            >
-                submit
-            </v-btn>
+            >Login</v-btn>
+
+            <router-link to="/signup">
+                <v-btn color="blue-grey lighten-3">Register</v-btn>
+            </router-link>
         </v-form>
     </v-container>
 </template>
@@ -33,6 +35,11 @@ export default {
                 email: null,
                 password: null,
             }
+        }
+    },
+    created(){
+        if(User.loggedIn()){
+            this.$router.push({name:'forum'})
         }
     },
     methods:{
