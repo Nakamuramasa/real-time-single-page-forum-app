@@ -3,8 +3,10 @@ import Router from 'vue-router'
 import Home from '../components/AppHome'
 import Login from '../components/login/Login'
 import Signup from '../components/login/signup'
-import Forum from '../components/forum/forum'
 import Logout from '../components/login/logout'
+import Forum from '../components/forum/forum'
+import Read from '../components/forum/read'
+import Create from '../components/forum/create'
 
 Vue.use(Router)
 
@@ -17,6 +19,11 @@ export default new Router({
             component: Login
         },
         {
+            path: '/logout',
+            name: 'logout',
+            component: Logout
+        },
+        {
             path: '/signup',
             name: 'signup',
             component: Signup
@@ -27,9 +34,14 @@ export default new Router({
             component: Forum
         },
         {
-            path: '/logout',
-            name: 'logout',
-            component: Logout
+            path: '/question/:slug',
+            name: 'read',
+            component: Read
+        },
+        {
+            path: '/ask',
+            name: 'ask',
+            component: Create
         }
     ]
 })

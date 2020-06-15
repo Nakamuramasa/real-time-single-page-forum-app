@@ -1,4 +1,3 @@
-import axios from 'axios'
 import Token from './Token'
 import AppStorage from './AppStorage'
 
@@ -46,6 +45,10 @@ class User {
             const payload = Token.payload(AppStorage.getToken())
             return payload.sub
         }
+    }
+
+    own(user_id){
+        return this.id() == user_id
     }
 }
 

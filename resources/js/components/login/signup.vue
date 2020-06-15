@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import User from '../../Helpers/User'
 
 export default {
