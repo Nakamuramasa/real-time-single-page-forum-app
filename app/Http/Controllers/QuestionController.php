@@ -38,6 +38,12 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
+        if(strlen($request->title) !== mb_strlen($request->title)){
+            $length = mb_strlen($request->title);
+            $request['slug'] = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz-', $length)), 0, $length);
+        }else{
+            $request['slug'] = str_slug($request->title);
+        }
         $question = auth()->user()->question()->create($request->all());
         return response(new QuestionResource($question), Response::HTTP_CREATED);
     }

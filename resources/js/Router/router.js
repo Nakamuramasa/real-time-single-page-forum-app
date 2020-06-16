@@ -7,6 +7,7 @@ import Logout from '../components/login/logout'
 import Forum from '../components/forum/forum'
 import Read from '../components/forum/read'
 import Create from '../components/forum/create'
+import CreateCategory from '../components/category/CreateCategory'
 
 Vue.use(Router)
 
@@ -42,6 +43,11 @@ export default new Router({
             path: '/ask',
             name: 'ask',
             component: Create
+        },
+        {
+            path: '/category',
+            name: 'category',
+            component: CreateCategory
         }
     ]
 })

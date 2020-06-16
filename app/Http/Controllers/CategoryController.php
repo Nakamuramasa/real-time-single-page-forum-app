@@ -39,9 +39,14 @@ class CategoryController extends Controller
     {
         $category = new Category;
         $category->name = $request->name;
-        $category->slug = str_slug($request->name);
+        if(strlen($request->name) !== mb_strlen($request->name)){
+            $length = mb_strlen($request->name);
+            $category->slug = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz-', $length)), 0, $length);
+        }else{
+            $category->slug = str_slug($request->name);
+        }
         $category->save();
-        return response('created', Response::HTTP_CREATED);
+        return response(new CategoryResource($category), Response::HTTP_CREATED);
     }
 
     /**
@@ -70,7 +75,7 @@ class CategoryController extends Controller
                 'slug' => str_slug($request->name)
             ]
         );
-        return response('updated', Response::HTTP_ACCEPTED);
+        return response(new CategoryResource($category), Response::HTTP_ACCEPTED);
     }
 
     /**
