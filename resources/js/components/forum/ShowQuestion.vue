@@ -12,7 +12,7 @@
                     </p>
                 </div>
                 <v-spacer></v-spacer>
-                <v-btn color="light-blue darken-2">5 Replies</v-btn>
+                <v-btn color="light-blue darken-2" dark>{{data.reply_count}} Replies</v-btn>
             </v-card-title>
 
             <v-card-text class="subtitle-1" v-html="body"></v-card-text>

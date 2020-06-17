@@ -11,16 +11,22 @@
         :data = question
         ></show-question>
 
+        <replies :question="question"></replies>
+        <new-reply :questionSlug="question.slug"></new-reply>
     </div>
 </template>
 
 <script>
 import ShowQuestion from './ShowQuestion'
 import EditQuestion from './EditQuestion'
+import Replies from '../reply/replies'
+import NewReply from '../reply/newReply'
 export default {
     components: {
         ShowQuestion,
-        EditQuestion
+        EditQuestion,
+        Replies,
+        NewReply
     },
     data(){
         return {

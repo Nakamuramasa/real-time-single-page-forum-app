@@ -31,16 +31,6 @@ class ReplyController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -48,7 +38,11 @@ class ReplyController extends Controller
      */
     public function store(Question $question, Request $request)
     {
-        $reply = $question->replies()->create($request->all());
+        $reply = new Reply;
+        $reply->body = $request->body;
+        $reply->question_id = $question->id;
+        $reply->user_id = auth()->id();
+        $reply->save();
         return response(['reply' => new ReplyResource($reply)], Response::HTTP_CREATED);
     }
 
@@ -61,17 +55,6 @@ class ReplyController extends Controller
     public function show(Question $question, Reply $reply)
     {
         return new ReplyResource($reply);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Model\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Reply $reply)
-    {
-        //
     }
 
     /**
