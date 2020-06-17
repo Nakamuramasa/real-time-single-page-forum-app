@@ -3,6 +3,9 @@
         <v-toolbar dense>
             <v-toolbar-title><strong>LaraQuestion</strong></v-toolbar-title>
             <v-spacer></v-spacer>
+
+            <app-notification v-if="loggedIn"></app-notification>
+
             <div>
                 <router-link
                 v-for="item in items"
@@ -17,10 +20,15 @@
 </template>
 
 <script>
+import AppNotification from './AppNotification'
 import User from '../Helpers/User'
 export default {
+    components:{
+        AppNotification
+    },
     data(){
         return {
+            loggedIn: User.loggedIn(),
             items: [
                 {
                     title: 'Forum',
