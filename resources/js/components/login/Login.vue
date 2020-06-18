@@ -17,6 +17,7 @@
                 color="secondary"
                 class="mr-4"
                 type="submit"
+                :disabled="disabled"
             >Login</v-btn>
 
             <router-link to="/signup">
@@ -33,12 +34,18 @@ export default {
             form: {
                 email: null,
                 password: null,
-            }
+            },
+            errorstest: {}
         }
     },
     created(){
         if(User.loggedIn()){
             this.$router.push({name:'forum'})
+        }
+    },
+    computed:{
+        disabled(){
+            return !(this.form.email && this.form.password)
         }
     },
     methods:{
@@ -48,3 +55,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+a {
+  text-decoration: none;
+}
+</style>

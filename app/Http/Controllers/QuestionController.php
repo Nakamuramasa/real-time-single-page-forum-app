@@ -7,6 +7,7 @@ use App\Model\Question;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\QuestionResource;
+use App\Http\Requests\QuestionRequest;
 
 class QuestionController extends Controller
 {
@@ -36,7 +37,7 @@ class QuestionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(QuestionRequest $request)
     {
         if(strlen($request->title) !== mb_strlen($request->title)){
             $length = mb_strlen($request->title);

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../components/AppHome'
+import Parallex from '../components/parallex'
 import Login from '../components/login/Login'
 import Signup from '../components/login/signup'
 import Logout from '../components/login/logout'
@@ -14,6 +14,11 @@ Vue.use(Router)
 export default new Router({
     mode: 'history',
     routes: [
+        {
+            path: '/',
+            name: 'home',
+            component: Parallex
+        },
         {
             path: '/login',
             name: 'login',

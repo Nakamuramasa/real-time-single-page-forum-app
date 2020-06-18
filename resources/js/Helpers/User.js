@@ -4,8 +4,8 @@ import AppStorage from './AppStorage'
 class User {
     login(data){
         axios.post('/api/auth/login', data)
-            .then(res => this.responseAfterLogin(res))
-            .catch(error => console.log(error.response.data))
+        .then(res => this.responseAfterLogin(res))
+        .catch(error => console.log(error.response.data.errors))
     }
 
     responseAfterLogin(res){

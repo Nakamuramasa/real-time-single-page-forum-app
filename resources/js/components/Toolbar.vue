@@ -1,7 +1,11 @@
 <template>
     <v-card color="grey lighten-4" flat tile>
-        <v-toolbar dense>
-            <v-toolbar-title><strong>LaraQuestion</strong></v-toolbar-title>
+        <v-toolbar dense color="light-blue lighten-1" dark>
+            <v-toolbar-title><strong>
+                <router-link class="white--text" to="/">
+                    LaraAnswers
+                </router-link>
+            </strong></v-toolbar-title>
             <v-spacer></v-spacer>
 
             <app-notification v-if="loggedIn"></app-notification>
@@ -64,3 +68,14 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+a {
+  color: white;
+  text-decoration: none;
+}
+.router-link-exact-active {
+  color: white;
+  text-decoration: none;
+}
+</style>

@@ -1,10 +1,13 @@
 <template>
     <v-container>
+        <v-alert v-if="errors" type="error" :value="true">
+            Categoryを入力してください
+        </v-alert>
         <v-form @submit.prevent="submit">
 
             <v-text-field
             v-model="form.name"
-            label="Category Name"
+            label="Category"
             required
             ></v-text-field>
 
@@ -13,6 +16,7 @@
             dark
             class="mr-4"
             type="submit"
+            :disabled="disabled"
             v-if="editSlug"
             >Update</v-btn>
 
@@ -20,6 +24,7 @@
             color="secondary"
             class="mr-4"
             type="submit"
+            :disabled="disabled"
             v-else
             >Create</v-btn>
 
@@ -70,7 +75,8 @@ export default {
                 name: null
             },
             categories: {},
-            editSlug: null
+            editSlug: null,
+            errors: null
         }
     },
     created(){
@@ -79,6 +85,11 @@ export default {
         }
         axios.get('/api/category')
         .then(res => this.categories = res.data.data);
+    },
+    computed:{
+        disabled(){
+            return !this.form.name
+        }
     },
     methods: {
         submit(){
@@ -97,6 +108,7 @@ export default {
                 this.categories.unshift(res.data);
                 this.form.name = null;
             })
+            .catch(error => this.errors = error.response.data.errors)
         },
         edit(index){
             this.form.name = this.categories[index].name;

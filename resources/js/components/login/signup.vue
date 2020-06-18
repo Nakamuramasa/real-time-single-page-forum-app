@@ -32,6 +32,7 @@
                 color="secondary"
                 class="mr-4"
                 type="submit"
+                :disabled="disabled"
             >
                 Register
             </v-btn>
@@ -61,6 +62,11 @@ export default {
             this.$router.push({name:'forum'})
         }
     },
+    computed:{
+        disabled(){
+            return !(this.form.name && this.form.email && this.form.password && this.form.password_confirmation)
+        }
+    },
     methods: {
         signup(){
             axios.post('/api/auth/signup', this.form)
@@ -73,3 +79,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+a {
+  text-decoration: none;
+}
+</style>
