@@ -21,7 +21,6 @@
 
 <script>
 import AppNotification from './AppNotification'
-import User from '../Helpers/User'
 export default {
     components:{
         AppNotification

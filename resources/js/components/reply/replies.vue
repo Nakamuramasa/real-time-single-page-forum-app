@@ -2,7 +2,7 @@
     <div>
         <reply
         v-for="(reply, index) in content"
-        :key="reply.id"
+        :key="reply.index"
         :index=index
         :data="reply"
         ></reply>
@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import User from '../../Helpers/User'
 import Reply from './reply'
 export default {
     components: {

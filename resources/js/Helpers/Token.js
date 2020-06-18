@@ -2,7 +2,7 @@ class Token {
     isValid(token){
         const payload = this.payload(token);
         if(payload){
-            return payload.iss == "http://127.0.0.1:8000/api/auth/login" || "https://vuejs.org/guide/deployment.html" ? true : false
+            return payload.iss == "http://127.0.0.1:8000/api/auth/login" || "http://127.0.0.1:8000/api/auth/signup" ? true : false
         }
         return false
     }
@@ -13,7 +13,19 @@ class Token {
     }
 
     decode(payload){
-        return JSON.parse(atob(payload))
+        if(this.isBase64(payload)){
+            return JSON.parse(atob(payload))
+        }
+        return false
+    }
+
+    isBase64(str){
+        try{
+            return btoa(atob(str)).replace(/=/g,"") == str
+        }
+        catch(err){
+            return false
+        }
     }
 }
 

@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import User from '../../Helpers/User'
 import EditReply from './editReply'
 import Like from '../likes/like'
 export default {

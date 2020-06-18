@@ -1942,7 +1942,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Helpers_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Helpers/User */ "./resources/js/Helpers/User.js");
 //
 //
 //
@@ -1968,7 +1967,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1980,11 +1978,11 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    if (_Helpers_User__WEBPACK_IMPORTED_MODULE_0__["default"].loggedIn()) {
+    if (User.loggedIn()) {
       this.getNotifications();
     }
 
-    Echo["private"]('App.User.' + _Helpers_User__WEBPACK_IMPORTED_MODULE_0__["default"].id()).notification(function (notification) {
+    Echo["private"]('App.User.' + User.id()).notification(function (notification) {
       _this.unread.unshift(notification);
 
       _this.unreadCount++;
@@ -2003,6 +2001,8 @@ __webpack_require__.r(__webpack_exports__);
         _this2.read = res.data.read;
         _this2.unread = res.data.unread;
         _this2.unreadCount = res.data.unread.length;
+      })["catch"](function (error) {
+        return Exception.handle(error);
       });
     },
     readIt: function readIt(notification) {
@@ -2033,7 +2033,6 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AppNotification__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AppNotification */ "./resources/js/components/AppNotification.vue");
-/* harmony import */ var _Helpers_User__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Helpers/User */ "./resources/js/Helpers/User.js");
 //
 //
 //
@@ -2055,7 +2054,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2063,7 +2061,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      loggedIn: _Helpers_User__WEBPACK_IMPORTED_MODULE_1__["default"].loggedIn(),
+      loggedIn: User.loggedIn(),
       items: [{
         title: 'Forum',
         to: '/forum',
@@ -2071,25 +2069,25 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         title: 'Ask Question',
         to: '/ask',
-        show: _Helpers_User__WEBPACK_IMPORTED_MODULE_1__["default"].loggedIn()
+        show: User.loggedIn()
       }, {
         title: 'Category',
         to: '/category',
-        show: _Helpers_User__WEBPACK_IMPORTED_MODULE_1__["default"].admin()
+        show: User.admin()
       }, {
         title: 'Login',
         to: '/login',
-        show: !_Helpers_User__WEBPACK_IMPORTED_MODULE_1__["default"].loggedIn()
+        show: !User.loggedIn()
       }, {
         title: 'Logout',
         to: '/logout',
-        show: _Helpers_User__WEBPACK_IMPORTED_MODULE_1__["default"].loggedIn()
+        show: User.loggedIn()
       }]
     };
   },
   created: function created() {
     EventBus.$on('logout', function () {
-      _Helpers_User__WEBPACK_IMPORTED_MODULE_1__["default"].logout();
+      User.logout();
     });
   }
 });
@@ -2105,7 +2103,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Helpers_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Helpers/User */ "./resources/js/Helpers/User.js");
 //
 //
 //
@@ -2170,7 +2167,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2184,7 +2180,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    if (!_Helpers_User__WEBPACK_IMPORTED_MODULE_0__["default"].admin()) {
+    if (!User.admin()) {
       this.$router.push('/forum');
     }
 
@@ -2348,7 +2344,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Helpers_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Helpers/User */ "./resources/js/Helpers/User.js");
 //
 //
 //
@@ -2382,13 +2377,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['data'],
   data: function data() {
     return {
-      own: _Helpers_User__WEBPACK_IMPORTED_MODULE_0__["default"].own(this.data.user_id)
+      own: User.own(this.data.user_id),
+      replyCount: this.data.reply_count
     };
+  },
+  created: function created() {
+    var _this = this;
+
+    EventBus.$on('newReply', function () {
+      _this.replyCount++;
+    });
+    Echo["private"]('App.User.' + User.id()).notification(function (notification) {
+      _this.replyCount++;
+    });
+    EventBus.$on('deleteReply', function () {
+      _this.replyCount--;
+    });
+    Echo["private"]('deleteReplyChannel').listen('DeleteReplyEvent', function (e) {
+      _this.replyCount--;
+    });
   },
   computed: {
     body: function body() {
@@ -2397,10 +2408,10 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     destroy: function destroy() {
-      var _this = this;
+      var _this2 = this;
 
       axios["delete"]("/api/question/".concat(this.data.slug)).then(function (res) {
-        return _this.$router.push('/forum');
+        return _this2.$router.push('/forum');
       })["catch"](function (error) {
         return console.log(error.response.data);
       });
@@ -2607,6 +2618,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -2627,6 +2641,11 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.listen();
     this.getQuestion();
+  },
+  computed: {
+    loggedIn: function loggedIn() {
+      return User.loggedIn();
+    }
   },
   methods: {
     listen: function listen() {
@@ -2660,7 +2679,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Helpers_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Helpers/User */ "./resources/js/Helpers/User.js");
 //
 //
 //
@@ -2669,7 +2687,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['content'],
   data: function data() {
@@ -2694,7 +2711,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     likeIt: function likeIt() {
-      if (_Helpers_User__WEBPACK_IMPORTED_MODULE_0__["default"].loggedIn()) {
+      if (User.loggedIn()) {
         this.liked ? this.decr() : this.incr();
         this.liked = !this.liked;
       }
@@ -2727,7 +2744,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Helpers_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Helpers/User */ "./resources/js/Helpers/User.js");
 //
 //
 //
@@ -2756,7 +2772,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2767,7 +2782,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
-    if (_Helpers_User__WEBPACK_IMPORTED_MODULE_0__["default"].loggedIn()) {
+    if (User.loggedIn()) {
       this.$router.push({
         name: 'forum'
       });
@@ -2775,7 +2790,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     login: function login() {
-      _Helpers_User__WEBPACK_IMPORTED_MODULE_0__["default"].login(this.form);
+      User.login(this.form);
     }
   }
 });
@@ -2811,7 +2826,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Helpers_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Helpers/User */ "./resources/js/Helpers/User.js");
 //
 //
 //
@@ -2857,7 +2871,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2871,7 +2884,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
-    if (_Helpers_User__WEBPACK_IMPORTED_MODULE_0__["default"].loggedIn()) {
+    if (User.loggedIn()) {
       this.$router.push({
         name: 'forum'
       });
@@ -2882,7 +2895,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.post('/api/auth/signup', this.form).then(function (res) {
-        _Helpers_User__WEBPACK_IMPORTED_MODULE_0__["default"].responseAfterLogin(res);
+        User.responseAfterLogin(res);
 
         _this.$router.push({
           name: 'forum'
@@ -2994,8 +3007,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Helpers_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Helpers/User */ "./resources/js/Helpers/User.js");
-/* harmony import */ var _reply__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./reply */ "./resources/js/components/reply/reply.vue");
+/* harmony import */ var _reply__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./reply */ "./resources/js/components/reply/reply.vue");
 //
 //
 //
@@ -3007,11 +3019,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    Reply: _reply__WEBPACK_IMPORTED_MODULE_1__["default"]
+    Reply: _reply__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   props: ['question'],
   data: function data() {
@@ -3034,7 +3045,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.content.splice(index, 1);
         });
       });
-      Echo["private"]('App.User.' + _Helpers_User__WEBPACK_IMPORTED_MODULE_0__["default"].id()).notification(function (notification) {
+      Echo["private"]('App.User.' + User.id()).notification(function (notification) {
         _this.content.unshift(notification.reply);
       });
       Echo.channel('deleteReplyChannel').listen('DeleteReplyEvent', function (e) {
@@ -3059,9 +3070,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Helpers_User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Helpers/User */ "./resources/js/Helpers/User.js");
-/* harmony import */ var _editReply__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./editReply */ "./resources/js/components/reply/editReply.vue");
-/* harmony import */ var _likes_like__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../likes/like */ "./resources/js/components/likes/like.vue");
+/* harmony import */ var _editReply__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./editReply */ "./resources/js/components/reply/editReply.vue");
+/* harmony import */ var _likes_like__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../likes/like */ "./resources/js/components/likes/like.vue");
 //
 //
 //
@@ -3097,14 +3107,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['data', 'index'],
   components: {
-    EditReply: _editReply__WEBPACK_IMPORTED_MODULE_1__["default"],
-    Like: _likes_like__WEBPACK_IMPORTED_MODULE_2__["default"]
+    EditReply: _editReply__WEBPACK_IMPORTED_MODULE_0__["default"],
+    Like: _likes_like__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   data: function data() {
     return {
@@ -3113,7 +3122,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     own: function own() {
-      return _Helpers_User__WEBPACK_IMPORTED_MODULE_0__["default"].own(this.data.user_id);
+      return User.own(this.data.user_id);
     },
     reply: function reply() {
       return md.parse(this.data.reply);
@@ -45900,7 +45909,7 @@ var render = function() {
               _c(
                 "v-btn",
                 { attrs: { color: "light-blue darken-2", dark: "" } },
-                [_vm._v(_vm._s(_vm.data.reply_count) + " Replies")]
+                [_vm._v(_vm._s(_vm.replyCount) + " Replies")]
               )
             ],
             1
@@ -46187,7 +46196,18 @@ var render = function() {
           _vm._v(" "),
           _c("replies", { attrs: { question: _vm.question } }),
           _vm._v(" "),
-          _c("new-reply", { attrs: { questionSlug: _vm.question.slug } })
+          _vm.loggedIn
+            ? _c("new-reply", { attrs: { questionSlug: _vm.question.slug } })
+            : _c(
+                "div",
+                { staticClass: "mt-4 ml-12" },
+                [
+                  _c("router-link", { attrs: { to: "/login" } }, [
+                    _vm._v("Login in to Reply")
+                  ])
+                ],
+                1
+              )
         ],
         1
       )
@@ -46607,7 +46627,7 @@ var render = function() {
     "div",
     _vm._l(_vm.content, function(reply, index) {
       return _c("reply", {
-        key: reply.id,
+        key: reply.index,
         attrs: { index: index, data: reply }
       })
     }),
@@ -105752,6 +105772,50 @@ var AppStorage = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./resources/js/Helpers/Exception.js":
+/*!*******************************************!*\
+  !*** ./resources/js/Helpers/Exception.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _User__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./User */ "./resources/js/Helpers/User.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var Exception = /*#__PURE__*/function () {
+  function Exception() {
+    _classCallCheck(this, Exception);
+  }
+
+  _createClass(Exception, [{
+    key: "handle",
+    value: function handle(error) {
+      this.isExipred(error.response.data.error);
+    }
+  }, {
+    key: "isExipred",
+    value: function isExipred(error) {
+      if (error == 'Token is expired' || error == 'Token is invalid') {
+        _User__WEBPACK_IMPORTED_MODULE_0__["default"].logout();
+      }
+    }
+  }]);
+
+  return Exception;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (Exception = new Exception());
+
+/***/ }),
+
 /***/ "./resources/js/Helpers/Token.js":
 /*!***************************************!*\
   !*** ./resources/js/Helpers/Token.js ***!
@@ -105778,7 +105842,7 @@ var Token = /*#__PURE__*/function () {
       var payload = this.payload(token);
 
       if (payload) {
-        return payload.iss == "http://127.0.0.1:8000/api/auth/login" || "https://vuejs.org/guide/deployment.html" ? true : false;
+        return payload.iss == "http://127.0.0.1:8000/api/auth/login" || "http://127.0.0.1:8000/api/auth/signup" ? true : false;
       }
 
       return false;
@@ -105792,7 +105856,20 @@ var Token = /*#__PURE__*/function () {
   }, {
     key: "decode",
     value: function decode(payload) {
-      return JSON.parse(atob(payload));
+      if (this.isBase64(payload)) {
+        return JSON.parse(atob(payload));
+      }
+
+      return false;
+    }
+  }, {
+    key: "isBase64",
+    value: function isBase64(str) {
+      try {
+        return btoa(atob(str)).replace(/=/g, "") == str;
+      } catch (err) {
+        return false;
+      }
     }
   }]);
 
@@ -105856,7 +105933,7 @@ var User = /*#__PURE__*/function () {
       var storedToken = _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].getToken();
 
       if (storedToken) {
-        return _Token__WEBPACK_IMPORTED_MODULE_0__["default"].isValid(storedToken) ? true : false;
+        return _Token__WEBPACK_IMPORTED_MODULE_0__["default"].isValid(storedToken) ? true : this.logout();
       }
 
       return false;
@@ -105993,7 +106070,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var marked__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(marked__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _Helpers_User__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Helpers/User */ "./resources/js/Helpers/User.js");
+/* harmony import */ var _Helpers_Exception__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Helpers/Exception */ "./resources/js/Helpers/Exception.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+
+
 
 
 
@@ -106007,6 +106088,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('app-home', __webpack_requi
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('vue-simplemde', vue_simplemde__WEBPACK_IMPORTED_MODULE_3__["default"]);
 window.axios = axios__WEBPACK_IMPORTED_MODULE_6___default.a;
 window.md = marked__WEBPACK_IMPORTED_MODULE_5___default.a;
+window.User = _Helpers_User__WEBPACK_IMPORTED_MODULE_7__["default"];
+window.Exception = _Helpers_Exception__WEBPACK_IMPORTED_MODULE_8__["default"];
 window.EventBus = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',

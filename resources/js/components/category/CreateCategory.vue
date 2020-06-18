@@ -63,7 +63,6 @@
 </template>
 
 <script>
-import User from '../../Helpers/User'
 export default {
     data(){
         return {

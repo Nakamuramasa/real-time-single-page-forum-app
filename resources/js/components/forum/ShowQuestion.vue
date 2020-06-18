@@ -12,7 +12,7 @@
                     </p>
                 </div>
                 <v-spacer></v-spacer>
-                <v-btn color="light-blue darken-2" dark>{{data.reply_count}} Replies</v-btn>
+                <v-btn color="light-blue darken-2" dark>{{replyCount}} Replies</v-btn>
             </v-card-title>
 
             <v-card-text class="subtitle-1" v-html="body"></v-card-text>
@@ -32,13 +32,32 @@
 </template>
 
 <script>
-import User from '../../Helpers/User'
 export default {
     props: ['data'],
     data(){
         return {
-            own : User.own(this.data.user_id)
+            own: User.own(this.data.user_id),
+            replyCount: this.data.reply_count
         }
+    },
+    created(){
+        EventBus.$on('newReply', () => {
+            this.replyCount++
+        })
+
+        Echo.private('App.User.' + User.id())
+        .notification((notification) => {
+            this.replyCount++
+        })
+
+        EventBus.$on('deleteReply', () => {
+            this.replyCount--
+        })
+
+        Echo.private('deleteReplyChannel')
+        .listen('DeleteReplyEvent', (e) => {
+            this.replyCount--
+        })
     },
     computed: {
         body(){

@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import User from '../../Helpers/User'
 export default {
     props:['content'],
     data(){

@@ -10,7 +10,6 @@
 import Toolbar from './Toolbar'
 import AppFooter from './AppFooter'
 import Login from './login/Login'
-
 export default {
     name: 'app',
     components: {
