@@ -1,3 +1,3 @@
-# This is a real time single page forum app.
+# Real time single page forum app.
 
-## We are going to use Pusher, Laravel, Vuejs, Vuetify, JWT, and markdown
+## Pusher, Laravel, Vuejs, Vuetify, JWT, and markdown
